@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Нейротренажеры</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bloger+Sans:wght@400&display=swap" rel="stylesheet">
+    <script src="ad_status.js.загрузка"></script>
+
+    <script type="text/javascript">
+        function showDate() {
+            var d = new Date();
+            var curr_date = d.getDate();
+            var curr_month = d.getMonth() + 1; //months are zero based
+            var curr_year = d.getFullYear();
+            document.write(curr_date + "-" + curr_month + "-" + curr_year);
+        }
+    </script>
+
+
+
+    <script type="text/javascript">showDate();</script>
+
+</head>
+
+<body>
+
+    <script>
+        function countdown(endDate) {
+            let days, hours, minutes, seconds;
+            endDate = new Date(endDate).getTime();
+
+            if (isNaN(endDate)) return;
+
+            setInterval(function () {
+                let startDate = new Date().getTime();
+                let timeRemaining = parseInt((endDate - startDate) / 1000);
+
+                if (timeRemaining >= 0) {
+                    days = parseInt(timeRemaining / 86400);
+                    timeRemaining = (timeRemaining % 86400);
+
+                    hours = parseInt(timeRemaining / 3600);
+                    timeRemaining = (timeRemaining % 3600);
+
+                    minutes = parseInt(timeRemaining / 60);
+                    timeRemaining = (timeRemaining % 60);
+
+                    seconds = parseInt(timeRemaining);
+
+                    document.getElementById("countdown").innerHTML =
+                        `${days}d ${hours}h ${minutes}m ${seconds}s`;
+                }
+            }, 1000);
+        }
+
+        (function () {
+            countdown('06/30/2024 00:00:00 AM');
+        }());
+    </script>
+    <div id="countdown"></div>
+    <div class="container">
+        <!-- Верхнее меню -->
+        <div class="header">
+            <div class="top-section">
+                <div class="nav">
+                    <a href="#">Главная</a>
+                    <a href="#">О компании</a>
+                    <a href="#">Каталог</a>
+                    <a href="#">Покупателям</a>
+                    <a href="#">Доставка и оплата</a>
+                    <a href="#">Акции</a>
+                    <a href="#">Блог</a>
+                    <a href="#">Контакты</a>
+                </div>
+                <img src="z.png" alt="Social Icons" class="user-icon">
+                <img src="c.png" alt="Social Icons" class="user-icon">
+                <img src="x.png" alt="Social Icons" class="user-icon">
+            </div>
+            <div class="divider-horizontal"></div>
+
+            <!-- Логотип, поиск, контакты -->
+            <div class="mid-section">
+                <div class="logo">
+                    <img src="logo.png" alt="Нейротренажеры">
+                </div>
+                <div class="search">
+                    <input type="text" placeholder="Что вы ищите?">
+                    <button>&#128269;</button>
+                </div>
+                <div class="contact">
+
+                    <div class='f'>
+                        <div class="phone-email">
+                            <div class="phone-email-item">
+                                <img src="Vector.png" alt="Иконка телефона" class="icon">
+                                <p>8 (800) 55 48 97</p>
+                                <img src="Vector (1).png" alt="Иконка почты" class="icon">
+                                <p>info@neyro-t.ru</p>
+                            </div>
+                            <p class="working-hours">Время работы: 07:00 - 19:00 по МСК</p>
+                        </div>
+                    </div>
+                    <div class="vertical-divider"></div>
+                    <img src="кабинет.png" alt="User Photo" class="user-photo">
+                </div>
+            </div>
+
+
+            <!-- Основное меню -->
+            <div class="main-nav">
+                <a href="#">Мозжечковая стимуляция</a>
+                <a href="#">Межполушарные доски</a>
+                <a href="#">Нейрокосички</a>
+                <a href="#">Балансиры</a>
+                <a href="#">Нейровосьмерки</a>
+                <a href="#">Разное</a>
+            </div>
+        </div>
+    </div>
+    
+
+    <div class="second-block">
+        <div class="main-content">
+            <div class="product-image">
+                <img src="1.png" alt="Доска Бильгоу">
+                <div class="background-text">
+                    <h2>Доска Бильгоу</h2>
+                    <p>Специально разработанное устройство для работы над стимуляцией мозжечка. Принцип работы балансировочной доски: Ребенок стоит на доске, которая закреплена на округлой основе, что заставляет его удерживать равновесие.</p>
+                    <button>Узнать подробности</button>
+                </div>
+            </div>
+        </div>
+        <div class="additional-info">
+            <div class="info-item green-bg">
+                <img src="2.png" alt="Стойка с мишенями-целями">
+                <div class="text">
+                    <h2>Стойка с мишенями-целями</h2>
+                    <p>Стойка регулируется по высоте (от 60 до 120 см) стойка, На стойке расположено 5 мишеней-целей.</p>
+                    <button>Подробнее</button>
+                </div>
+            </div>
+            <div class="info-item pink-bg">
+                <img src="3.png" alt="Нейровосьмерка">
+                <div class="text">
+                    <h2>Нейровосьмерка</h2>
+                    <p>Один из тренажеров для мозжечковой стимуляции. Для успешного выполнения заданий необходимо регулировать...</p>
+                    <button>Подробнее</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="products-section">
+        <h2>Товары месяца</h2>
+        <button class="month-products-button">В каталог ></button>
+        <div class="products">
+            <div class="product">
+                <img src="й.png" alt="Доска Бильгоу для мозжечковой стимуляции" width="230" height="123">
+                <h3>Доска Бильгоу для мозжечковой стимуляции</h3>
+                <p>Тренажеров для мозжечковой стимуляции.</p>
+                <div class="price-quantity">
+                    <div>
+                        <p class="price">2 490 р.</p>
+                        <p class="old-price">3 470 р.</p>
+                    </div>
+                    <input type="number" value="1" min="1">
+                    <button class="buy-button">Купить</button>
+                </div>
+
+                <button class="details-button">Подробнее</button>
+            </div>
+            <div class="product">
+                <img src="ц.png" alt="Набор мячей с фиксацией на одежде" width="154" height="150">
+                <h3>Набор мячей с фиксацией на одежде</h3>
+                <p>Тренажеров для мозжечковой стимуляции.</p>
+                <div class="price-quantity">
+                    <div>
+                        <p class="price">650 р.</p>
+                        <p class="old-price">800 р.</p>
+                    </div>
+                    <input type="number" value="1" min="1">
+                    <button class="buy-button">Купить</button>
+                </div>
+
+                <button class="details-button">Подробнее</button>
+            </div>
+            <div class="product">
+                <img src="у.png" alt="Балансир Нейровосьмерка" width="220" height="150">
+                <h3>Мишень напольная цветная</h3>
+                <p>Тренажеров для мозжечковой стимуляции.</p>
+                <div class="price-quantity">
+                    <div>
+                        <p class="price">1 590 р.</p>
+                        <p class="old-price">2000 р.</p>
+                    </div>
+                    <input type="number" value="1" min="1">
+                    <button class="buy-button">Купить</button>
+                </div>
+
+                <button class="details-button">Подробнее</button>
+            </div>
+            <div class="product">
+                <img src="к.png" alt="Товар 4" width="174" height="150">
+                <h3>Сумка для тренажеров Бильгоу</h3>
+                <p>Тренажеров для мозжечковой стимуляции.</p>
+                <div class="price-quantity">
+                    <div>
+                        <p class="price">2 490 р.</p>
+                        <p class="old-price">3000 р.</p>
+                    </div>
+                    <input type="number" value="1" min="1">
+                    <button class="buy-button">Купить</button>
+                </div>
+
+                <button class="details-button">Подробнее</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Add this after your existing forms -->
+    <div class="new-form-section">
+        <div class="form-header">
+            <h2>Для нейропсизологов</h2>
+            <button class="button">В каталог ></button>
+        </div>
+        <div class="form-content">
+            <div class="form-image">
+                <img src="ку.png" alt="Child on balance board" width="570" height="429">
+                <button class="play-button">&#9658;</button>
+            </div>
+            <div class="form-products">
+                <div class="product">
+                    <img src="у.png" alt="Доска Бильгоу для мозжечковой стимуляции" width="230" height="123">
+                    <h3>Доска Бильгоу для мозжечковой стимуляции</h3>
+                    <p>Тренажеров для мозжечковой стимуляции.</p>
+                    <div class="price-quantity">
+                        <div>
+                            <p class="price">2 490 р.</p>
+                            <p class="old-price">3 470 р.</p>
+                        </div>
+                        <input type="number" value="1" min="1">
+                        <button class="buy-button">Купить</button>
+                    </div>
+                    <button class="details-button">Подробнее</button>
+                </div>
+                <div class="product">
+                    <img src="ц.png" alt="Набор мячей с фиксацией на одежде" width="154" height="150">
+                    <h3>Набор мячей с фиксацией на одежде</h3>
+                    <p>Тренажеров для мозжечковой стимуляции.</p>
+                    <div class="price-quantity">
+                        <div>
+                            <p class="price">650 р.</p>
+                            <p class="old-price">935 р.</p>
+                        </div>
+                        <input type="number" value="1" min="1">
+                        <button class="buy-button">Купить</button>
+                    </div>
+                    <button class="details-button">Подробнее</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="products-section">
+        <h2>Нейротренажеры</h2>
+        <button class="month-products-button">В каталог ></button>
+        <div class="products">
+            <div class="product">
+                <img src="й.png" alt="Доска Бильгоу для мозжечковой стимуляции" width="230" height="123">
+                <h3>Доска Бильгоу для мозжечковой стимуляции</h3>
+                <p>Тренажеров для мозжечковой стимуляции.</p>
+                <div class="price-quantity">
+                    <div>
+                        <p class="price">2 490 р.</p>
+                        <p class="old-price">3 470 р.</p>
+                    </div>
+                    <input type="number" value="1" min="1">
+                    <button class="buy-button">Купить</button>
+                </div>
+
+                <button class="details-button">Подробнее</button>
+            </div>
+            <div class="product">
+                <img src="ц.png" alt="Набор мячей с фиксацией на одежде" width="154" height="150">
+                <h3>Набор мячей с фиксацией на одежде</h3>
+                <p>Тренажеров для мозжечковой стимуляции.</p>
+                <div class="price-quantity">
+                    <div>
+                        <p class="price">650 р.</p>
+                        <p class="old-price">800 р.</p>
+                    </div>
+                    <input type="number" value="1" min="1">
+                    <button class="buy-button">Купить</button>
+                </div>
+
+                <button class="details-button">Подробнее</button>
+            </div>
+            <div class="product">
+                <img src="у.png" alt="Балансир Нейровосьмерка" width="220" height="150">
+                <h3>Мишень напольная цветная</h3>
+                <p>Тренажеров для мозжечковой стимуляции.</p>
+                <div class="price-quantity">
+                    <div>
+                        <p class="price">1 590 р.</p>
+                        <p class="old-price">2000 р.</p>
+                    </div>
+                    <input type="number" value="1" min="1">
+                    <button class="buy-button">Купить</button>
+                </div>
+
+                <button class="details-button">Подробнее</button>
+            </div>
+            <div class="product">
+                <img src="к.png" alt="Товар 4" width="174" height="150">
+                <h3>Сумка для тренажеров Бильгоу</h3>
+                <p>Тренажеров для мозжечковой стимуляции.</p>
+                <div class="price-quantity">
+                    <div>
+                        <p class="price">2 490 р.</p>
+                        <p class="old-price">3000 р.</p>
+                    </div>
+                    <input type="number" value="1" min="1">
+                    <button class="buy-button">Купить</button>
+                </div>
+
+                <button class="details-button">Подробнее</button>
+            </div>
+        </div>
+    </div>
+
+
+    <section class="about-us-section">
+        <h3>Коротко о нас</h3>
+        <div class="about-us-content">
+            <div class="form-image">
+                <img src="Видео.png" alt="Child on balance board" width="570" height="429">
+            </div>
+            <div class="about-us-info">
+                <h3>Что такое доска Бильгоу?</h3>
+                <n>История программы мозжечковой стимуляции родилась ее началась в 60е годы XX века. Как-то раз американский педагог Фрэнк Бильгоу, который работал в то время в школе, заметил интересную закономерность: ученики, которые на переменах играли в игры, связанные с балансировкой.</n>
+                <div class="licenses">
+                    <div class="about-us-info">
+                        <h3>Что такое доска Бильгоу?</h3>
+                        <img src="д.png" alt="">
+                        <img src="д1.png" alt="">
+                        <img src="д2.png" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="about-us-section">
+        <h3>Отзывы</h3>
+        <div class="reviews-section">
+            <div class="review1">
+                <img src="e.png" alt="Child on balance board">
+                <div class="review-text">
+                    <h3>Косов Андрей Владимирович</h3>
+                    <p>г. Пермь</p>
+                    <p>Двухсторонняя цветная разметка, есть антискользящий слой, покрыт лаком в несколько слоев, гладкий, яркий, классный, металлический крепеж в ногах, нет острых углов, ножки поворотные, есть гарантия и сертификат качества.</p>
+                </div>
+            </div>
+            <div class="review1">
+                <img src="e1.png" alt="Child on balance board">
+                <div class="review-text">
+                    <h3>Анна Анатольевна</h3>
+                    <p>г. Москва</p>
+                    <p>Для развития речи и координации у моей дочери логопед в детском центре посоветовал заниматься на специальной балансировочной доске по методике Бильгоу – сделать ее самостоятельно или купить уже готовую.</p>
+                </div>
+            </div>
+            <div class="review">
+                <div style="position: relative;">
+                    <img src="видео.png" alt="Child on balance board">
+                    <button class="play-button">&#9658;</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+    <script type="text/javascript">
+        ymaps.ready(init);
+        function init() {
+            var myMap = new ymaps.Map("map", {
+                center: [55.76, 37.64],
+                zoom: 10
+            });
+            var myPlacemark = new ymaps.Placemark([55.76, 37.64], {
+                hintContent: 'Мы здесь!',
+                balloonContent: 'Наш офис'
+            });
+            myMap.geoObjects.add(myPlacemark);
+        }
+    </script>
+    <div id="map" class="centered-map"></div>
+
+
+    <footer class="footer">
+        <div class="footer-top footer-section">
+            <span>Новинки и акции у вас в почте</span>
+            <div class="phone-email-item">
+                <input type="email" placeholder="Ваш e-mail адрес">
+                <div class="ew">
+                    <button>Подписаться</button>
+                </div>
+                <div class="phone-email">
+                    <div class="p">
+                        <img src="Vector.png" alt="Иконка телефона" class="icon">
+                        <p>8 (800) 55 48 97</p>
+                    </div>
+                    <p class="working-hours">Звонок бесплатный</p>
+                </div>
+                <div class="fr">
+                    <button style="margin-right: 10px;">Задать вопрос</button>
+                    <button>Заказать звонок</button>
+                </div>
+            </div>
+        </div>
+        <div class="footer-middle footer-section">
+            <div class="column logo-column">
+                <img src="Лого.png" alt="Logo" class="logo">
+            </div>
+            <div class="column">
+                <h3>Информация</h3>
+                <p><a href="#">Главная</a></p>
+                <p><a href="#">Кредит</a></p>
+                <p><a href="#">Возврат</a></p>
+                <p><a href="#">Покупателям</a></p>
+                <p><a href="#">Доставка и оплата</a></p>
+            </div>
+            <div class="column">
+                <h3>Вебинар</h3>
+                <p><a href="#">Психолог</a></p>
+                <p><a href="#">Логопед</a></p>
+                <p><a href="#">Дефектолог</a></p>
+            </div>
+            <div class="column">
+                <h3>Новости</h3>
+                <p><a href="#">Акции</a></p>
+                <p><a href="#">Блог</a></p>
+            </div>
+            <div class="column">
+                <h3>Контакты</h3>
+                <p>Время работы: 07:00 - 19:00 по МСК</p>
+                <p><a href="mailto:info@neyro-t.ru">info@neyro-t.ru</a></p>
+                <p>Свердловская обл., г. Новоуральск, ул. Фрунзе оф. 3</p>
+                <div class="social-icons">
+                    <a href="#"><img src="v.png" alt="Facebook"></a>
+                    <a href="#"><img src="b.png" alt="Twitter"></a>
+                    <a href="#"><img src="n.png" alt="Instagram"></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom footer-section">
+            <span>Политика обработки персональных данных</span>
+            <div class="payment-methods">
+                <img src="i.png" alt="Mir" width="50">
+                <img src="o.png" alt="MasterCard" width="50">
+                <img src="p.png" alt="Visa" width="50">
+            </div>
+            <span>Copyright © 2021 ООО "Интернет проекты"</span>
+        </div>
+    </footer>
+
+
+
+    <button id="scrollToTopBtn" title="Go to top">↑ Наверх</button>
+
+    <script>
+        // Получаем кнопку
+        let scrollToTopBtn = document.getElementById("scrollToTopBtn");
+
+        // Показываем кнопку, когда пользователь прокручивает страницу вниз на 20px от верха
+        window.onscroll = function () { scrollFunction() };
+
+        function scrollFunction() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                scrollToTopBtn.style.display = "block";
+            } else {
+                scrollToTopBtn.style.display = "none";
+            }
+        }
+
+        // При клике на кнопку прокручиваем страницу наверх
+        scrollToTopBtn.onclick = function () {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+
+
+</body>
+
+</html>

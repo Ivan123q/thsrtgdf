@@ -1,0 +1,566 @@
+'use strict';
+var winHeight,
+	scrollOffset = 60,
+	popupOpened = false,
+	popupOpenedPos = 0,
+	scrollPos = 0,
+	animDuration = 500,
+	pageLoaded = false,
+	formTitle = '',
+	scrollFixedEl = $('body');
+$(document).ready(function() {
+	if ('ontouchstart' in document.documentElement) {
+		$('html').addClass('touch');
+	} else {
+		$('html').addClass('no-touch');
+	}
+	svg4everybody(); // поддержка SVG в старых браузерах
+	//popup('subscribed');
+	winHeight = $(window).height();
+	scrollPos = $(window).scrollTop();
+
+	// Клик на бургер
+	$('.menu-toggle').on('click',function() {
+		if (!menuOpened) {
+			menuOpen();
+		} else {
+			menuClose();
+		}
+	});
+
+	// Закрытие меню при клике на фон
+	$('body').on('click',function(e) {
+		if (menuOpened && !$(e.target).closest('.menu-toggle').length) {
+			if (!$(e.target).closest('.head-top-inner').length) {
+				menuClose();
+				e.stopPropagation();
+			}
+		} 
+	});
+
+	$('body').on('click', '.head-search-trigger',function(e) {
+		if (window.matchMedia('(min-width:751px)').matches) {
+			$('body').addClass('body--head-search');
+		} else {
+			$('.mob-toggle').removeClass('active');
+			$('.mob-toggle[data-mob-toggle="mob-search"]').addClass('active');
+		}
+	});
+	$('body').on('click',function(e) {
+		if (!$(e.target).closest('.head-search').length && !$(e.target).closest('.head-search-trigger').length) {
+			$('body').removeClass('body--head-search');
+		} 
+	});
+
+	$(window).on('resize',function() {
+		$('body').removeClass('body--head-search');
+	});
+
+	// Изменение количества
+	$('.count-spinner').each(function() {
+		var count = $(this),
+			countCtrl = count.find('.count-spinner-control'),
+			countInp = count.find('.count-spinner-input'),
+			countInpVal = 0,
+			countMin = +count.attr('data-spinner-min'),
+			countMax = +count.attr('data-spinner-max');
+	
+		countCtrl.on('click',function() {
+			countInpVal = +countInp.val() || 1;
+			if ($(this).hasClass('count-spinner-plus')) {
+				countInpVal += 1;
+			}
+
+			if ($(this).hasClass('count-spinner-minus')) {
+				countInpVal -= 1;
+			}
+
+			if (!countMin || !$.isNumeric(countMin)) {
+				countMin = 1;
+			}
+
+			if (countInpVal < countMin) {
+				countInpVal = countMin;
+			}
+
+			if (countMax && $.isNumeric(countMax)) {
+				if (countInpVal > countMax) {
+					countInpVal = countMax;
+				}
+			}
+
+			countInp.val(countInpVal).trigger('change');
+		});
+
+		countInp.on('change input', function() {
+			if (!$(this).val()) {
+				$(this).val(1);
+			}
+		});
+	});
+
+	// Слайдер цены в фильтрах
+	$('.catalog-price').each(function() {
+		var block = $(this),
+			min = +block.attr('data-price-min'),
+			max = +block.attr('data-price-max'),
+			inputs = block.find('.catalog-price-output__input'), 
+			outFrom = block.find('.catalog-price-from'),
+			outFromV = outFrom.val(),
+			outTo = block.find('.catalog-price-to'),
+			outToV = outTo.val(),
+			range = block.find('.catalog-price-range input'),
+			rangeS;
+
+		range.ionRangeSlider({
+			type: 'double',
+			min: min,
+			max: max,
+			step: 1000,
+			grid: false,
+			from: outFromV,
+			to: outToV,
+			onChange: function(data) {
+				outFromV = data.from;
+				outFrom.val(outFromV);
+				outToV = data.to;
+				if (outToV > max) {
+					outToV = max;
+				} 
+				outTo.val(outToV);
+			}
+		});
+
+		rangeS = range.data('ionRangeSlider');
+
+		inputs.on('change input paste keyup',function() {
+			if ($(this).is(outFrom)) {
+				outFromV = +$(this).val().replace(/\s+/g, ' ').trim();
+				if (outFromV < min) {
+					outFromV = min;
+				}
+				$(this).val(outFromV);
+			}
+			if ($(this).is(outTo)) {
+				outToV = +$(this).val().replace(/\s+/g, ' ').trim();
+				if (outToV > max) {
+					outToV = max;
+				}
+				$(this).val(outToV);
+			}
+			rangeS.update({
+				from: outFromV,
+				to: outToV
+			});
+		});
+	});
+	// Запрет ввода любых символов, кроме 0-9, (), -, +
+	$('.catalog-price-output__input').on('input change paste keyup',function() {
+		$(this).val(this.value.replace(/[^0-9]/,''));
+	});
+
+	// Переключатель сортировки
+	$('.catalog-sorter-trigger').each(function() {
+		var sorter = $(this),
+			sorterText = sorter.find('.catalog-sorter-trigger__text'),
+			textUp = sorter.attr('data-up-text'),
+			textDown = sorter.attr('data-down-text');
+
+		sorter.on('click',function() {
+			sorter.toggleClass('sorting-down');
+			if (sorter.hasClass('sorting-down')) {
+				sorterText.text(textDown);
+			} else {
+				sorterText.text(textUp);
+			}
+		});
+	});
+
+	// Слайдер в карточке товара
+	$('.product-images-block').each(function() {
+		var block = $(this),
+			thumbs = block.find('.product-thumbs'),
+			images = block.find('.product-images');
+
+		var thumbsS = new Swiper(thumbs, {
+			slidesPerView: 4,
+			spaceBetween: 18,
+			speed: 500,
+			direction: 'vertical',
+			loop: true,
+			freeMode: true,
+			loopedSlides: 4, //looped slides should be the same
+			navigation: {
+				nextEl: block.find('.product-images-nav-item--next'),
+				prevEl: block.find('.product-images-nav-item--prev'),
+			},
+			slideToClickedSlide: true,
+			watchSlidesVisibility: true,
+			watchSlidesProgress: true,
+			breakpoints: {
+				1: {
+					spaceBetween: 12,
+				},
+				801: {
+					spaceBetween: 18,
+				}
+			}
+		});
+
+		var imagesS = new Swiper(images, {
+			slidesPerView: 1,
+			loop: true,
+			speed: 500,
+			spaceBetween: 0,
+			grabCursor: true,
+			init: true,
+			freeMode: false,
+			mousewheel: false,
+			loopedSlides: 4, //looped slides should be the same
+			slideToClickedSlide: true,
+			navigation: {
+				nextEl: block.find('.product-images-nav-item--next'),
+				prevEl: block.find('.product-images-nav-item--prev'),
+			},
+			thumbs: {
+				swiper: thumbsS,
+			},
+		});
+	});
+
+	// Перестройка блоков на главной в слайдер
+	$('.index-sw').each(function() {
+		var block = $(this),
+			slider = block,
+			sliderOpts = {
+				slidesPerView: 'auto',
+				loop: true,
+				speed: 500,
+				spaceBetween: 20,
+				grabCursor: true,
+				init: true,
+				freeMode: false,
+				mousewheel: false,
+				pagination: {
+					el: $(this).find('.index-sw-dots'),
+					clickable: true,
+					renderBullet: function(index, className) {
+						return '<div class="index-sw-dot ' + className + '"></div>';
+					}
+				}
+			};
+
+		var sliderS;
+
+		$(window).on('resize',function() {
+			if (window.matchMedia('(max-width:600px)').matches) {
+				if (!block.hasClass('init')) {
+					block.find('.index-sw-grid').addClass('swiper-wrapper');
+					block.find('.ui-col').addClass('swiper-slide');
+					sliderS = new Swiper(slider, sliderOpts);
+					block.addClass('init');
+				}
+			} else {
+				if (block.hasClass('init')) {
+					sliderS.destroy();
+					block.find('.index-sw-grid').removeClass('swiper-wrapper');
+					block.find('.ui-col').removeClass('swiper-slide');
+					block.removeClass('init');
+				}
+			}
+		});
+	});
+
+	// Воспроизведение видео
+	$('body').on('click', '.video-play', function() {
+		var video = $(this).closest('.video'),
+			videoFr = video.find('.video-frame'),
+			videoUrl = video.attr('data-video');
+
+		if (videoUrl && videoUrl !== '') {
+			videoFr.html('<iframe src="'+videoUrl+'" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>');
+			video.addClass('playing');
+		}
+	});
+	
+	$('body').on('click', '.mob-toggle-close',function() {
+		$('.mob-toggle').removeClass('active');
+	});
+	
+	$('body').on('click', '.mob-trigger',function() {
+		var mob = $(this).attr('data-mob-toggle');
+
+		$('.mob-toggle').removeClass('active');
+		$('.mob-toggle[data-mob-toggle="'+mob+'"]').addClass('active').find('.mob-toggle-inner').scrollTop(0);
+	});
+
+	// Показать/скрыть праоль
+	$('body').on('click','.show-password',function(e) {
+		var lab = $(this).closest('.ui-input'),
+			inp = lab.find('input');
+
+		if (!lab.hasClass('active')) {
+			lab.addClass('active');
+
+			inp.prop('type','text');
+		} else {
+			lab.removeClass('active');
+
+			inp.prop('type','password');
+		}
+	});
+
+	// Открытие попапов
+	$('body').on('click','[data-open-popup]',function(e) {
+		e.preventDefault();
+		popup($(this).attr('data-open-popup'));
+	});
+
+	// Переключение видов оплаты и доставки
+	$('body').on('change', '.order-control-inp',function() {
+		var block = $(this).closest('.order-controls'),
+			descrs = block.find('.order-controls-descr'),
+			descr = block.find('.order-control-inp:checked').attr('data-order-control');
+
+		descrs.hide();
+		block.find('.order-controls-descr[data-order-control="'+descr+'"]').fadeIn(500);
+	});
+
+	// Карта в контактах
+	var mapIcon = rootPath+'images/map-marker.svg';
+
+	if ($('.contacts-map').length) {
+		$('.contacts-map').each(function() {
+			var id = $(this).attr('id'),
+				mapArr = JSON.parse($(this).attr('data-map-arr')),
+				center = mapArr[0].coords;
+
+			ymaps.ready(function() {
+				initYMap(center, id, mapArr);
+			});
+		});
+	}
+
+	function initYMap(coords, block, arr) {
+		var map = new ymaps.Map(block, {
+			center: coords,
+			zoom: 16
+		});
+
+		var pixelCenter = map.getGlobalPixelCenter(coords);
+		var geoCenter = map.options.get('projection').fromGlobalPixels(pixelCenter, map.getZoom());
+		map.setCenter(geoCenter);
+
+		$.each(arr,function(i) {
+			var mapArrItem = arr[i];
+
+			var mapPlacemark = new ymaps.Placemark(mapArrItem['coords'], false, {
+				iconLayout: 'default#image',
+				iconImageHref: mapIcon,
+				iconImageSize: [30, 34],
+				iconImageOffset: [-15, -34],
+				balloonOffset:[0,-34],
+				hideIconOnBalloonOpen:false,
+				balloonMaxWidth:200
+			});
+
+			map.geoObjects.add(mapPlacemark);
+		});
+
+		map.controls.add(new ymaps.control.ZoomControl());
+		map.behaviors.disable('scrollZoom');
+
+		if (arr.length > 1) {
+			map.setBounds(map.geoObjects.getBounds());
+			map.setZoom(map.getZoom()-0.4);
+		}
+	}
+
+	if (device.desktop()) {
+		
+	} else {
+		
+	}
+
+	$(window).on('resize',function() {
+		winHeight = $(window).height();
+		scrollPos = $(window).scrollTop();
+
+		scrollbarWidth();
+		defineBarWidth();
+	});
+	$(window).on('scroll',function() {
+		scrollPos = $(window).scrollTop();
+	});
+
+	$(window).trigger('resize').trigger('scroll');
+
+	// Ограничение длины ввода в поле type="number"
+	$('input[type="number"]').on('input change paste keyup',function() {
+		var max = parseInt($(this).attr('data-max'));
+		var val = $(this).val();
+		if (val.length > max) {
+			$(this).val(val.slice(0,max));
+		}
+	});
+
+	// Прокрутка к элементу
+	$('.scrollTo').on('click',function(e) {
+		e.preventDefault();
+		var target = $(this).attr('data-scrollto-link');
+		if (target) {
+			var targetPos = $('[data-scrollto-target="'+target+'"]').not($(this)).offset().top - scrollOffset;
+			$('html, body').animate({scrollTop:targetPos},500);
+		}
+	});
+
+	// ТАБЫ
+	$('.ui-tab-content').hide();
+	$('.ui-tabs').each(function() {
+		if ($(this).find('.ui-tab.active').length < 1 || $(this).find('.ui-tab.active').length > 1) {
+			$(this).find('.ui-tab').removeClass('active');
+			$(this).find('.ui-tab:first-child').addClass('active');
+		}
+		var activeTab = $(this).find('.ui-tab.active');
+		var activeTabContent = activeTab.find('a').attr('data-tab');
+		$('.ui-tab-content[data-tab="'+activeTabContent+'"]').show().addClass('ative');
+	});
+	$('.ui-tabs').find('.ui-tab-link').on('click',function() {
+		if (!$(this).closest('.ui-tab').hasClass('active')) {
+			var tab = $(this).attr('data-tab');
+
+			$(this).closest('.ui-tabs').find('.ui-tab').removeClass('active');
+			$(this).closest('.ui-tab').addClass('active');
+
+			$('.ui-tab-content[data-tab="'+tab+'"]').parent().find('.ui-tab-content').hide().removeClass('ative');
+			$('.ui-tab-content[data-tab="'+tab+'"]').fadeIn(animDuration).addClass('ative');
+		}
+	});
+
+	// Добавляем в попап кнопку закрытия
+	$('.popup-content').each(function() {
+		$(this).prepend('<div class="cross-btn popup-close noselect" />');
+	});
+	$('.popup-close').on('click',function() {
+		popupClose();
+	});
+
+	// Закрытие попапа при клике на фон
+	$('.popup').on('click',function(e) {
+		if (!$(e.target).closest('.popup-content').length) {
+			popupClose();
+			e.stopPropagation();
+		} 
+	});
+
+	// Закрытие попапа по нажатию на Esc
+	$(document).on('keypress',function(e) {
+		if (popupOpened == true) {
+			if (e.which == 27) {
+				popupClose();
+			}
+		}
+	});
+});
+	
+$(window).on('load',function() {
+	setTimeout(function() {
+		$('body').addClass('body--page-loaded');
+		pageLoaded = true;
+		$(window).trigger('scroll');
+	},300);
+});
+
+// Определенение ширины скроллбара браузера
+var scrollBarWidth = 0;
+function scrollbarWidth() { 
+	var div = $('<div style="width:50px;height:50px;overflow:hidden;position:absolute;top:-200px;left:-200px;"><div style="height:100px;"></div>');
+	$('body').append(div);
+	var w1 = $('div', div).innerWidth();
+	div.css('overflow-y', 'scroll');
+	var w2 = $('div', div).innerWidth();
+	$(div).remove();
+	return (w1 - w2);
+}
+function defineBarWidth() {
+	var bodyHeight = parseInt($('.page').height());
+
+	if (bodyHeight > winHeight) {
+		scrollBarWidth = scrollbarWidth();
+	} else {
+		scrollBarWidth = 0;
+	}
+}
+
+// Блокировка прокрутки
+function scrollLock(el,type) {
+	if (type == 'unlock') {
+		$('body').removeClass('body--fixed');
+		el.css({
+			'padding-right':''
+		});
+	} else {
+		$('body').addClass('body--fixed');
+		el.css({
+			'padding-right':scrollBarWidth
+		});
+	}
+}
+
+// МОБИЛЬНОЕ МЕНЮ
+var menuOpened = false;
+// Открытие меню
+function menuOpen() {
+	popupOpenedPos = $(window).scrollTop();
+
+	$('body').addClass('body--menu-opened');
+	scrollLock(scrollFixedEl);
+
+	menuOpened = true;
+}
+// Закрытие меню
+function menuClose() {
+	$('body').removeClass('body--menu-opened');
+	scrollLock(scrollFixedEl, 'unlock');
+
+	if (device.ios()) {
+		$(window).scrollTop(popupOpenedPos);
+	}
+
+	menuOpened = false;
+}
+
+// ПОПАПЫ
+// Открытие попапа
+function popup(id) {
+	if ($('#'+id).length) {
+		popupOpenedPos = $(window).scrollTop();
+
+		$('.popups-overlay').addClass('active');
+
+		$('body').addClass('body--popup-opened');
+		scrollLock(scrollFixedEl);
+
+		$('.popup').removeClass('active');
+		var popup = $('.popup#'+id);
+
+		popup.scrollTop(0).addClass('active');
+		popupOpened = true;
+	}
+}
+// Закрытие попапа
+function popupClose() {
+	$('.popups-overlay').removeClass('active');
+	$('.popup').removeClass('active');
+
+	$('body').removeClass('body--popup-opened');
+
+	setTimeout(function() {
+		scrollLock(scrollFixedEl,'unlock');
+	},animDuration);
+
+	if (device.ios()) {
+		$(window).scrollTop(popupOpenedPos);
+	}
+	popupOpened = false;
+}

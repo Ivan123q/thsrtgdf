@@ -1,0 +1,129 @@
+let basketPage = '/personal/cart/';
+function basketReinitialization(){
+    $('.section.cart .count-spinner').each(function() {
+        var count = $(this),
+            countCtrl = count.find('.count-spinner-control'),
+            countInp = count.find('.count-spinner-input'),
+            countInpVal = 0,
+            countMin = +count.attr('data-spinner-min'),
+            countMax = +count.attr('data-spinner-max');
+
+        countCtrl.on('click',function() {
+            countInpVal = +countInp.val() || 1;
+            if ($(this).hasClass('count-spinner-plus')) {
+                countInpVal += 1;
+            }
+
+            if ($(this).hasClass('count-spinner-minus')) {
+                countInpVal -= 1;
+            }
+
+            if (!countMin || !$.isNumeric(countMin)) {
+                countMin = 1;
+            }
+
+            if (countInpVal < countMin) {
+                countInpVal = countMin;
+            }
+
+            if (countMax && $.isNumeric(countMax)) {
+                if (countInpVal > countMax) {
+                    countInpVal = countMax;
+                }
+            }
+
+            countInp.val(countInpVal).trigger('change');
+        });
+
+        countInp.on('change input', function() {
+            if (!$(this).val()) {
+                $(this).val(1);
+            }
+        });
+    });
+};
+function updateBasket(){
+    if(location.pathname == basketPage){
+        $.ajax({
+            url: basketPage,
+            type: "GET",
+            success: function (result) {
+                $('.section.cart').html(result);
+                basketReinitialization();
+            },
+        });
+    }
+};
+
+$(document).on('click', '[data-basket]', function () {
+
+    $.post("/api/2quick/ajax/index.php", {
+        action: 'basket',
+        data: {
+            'id': $(this).data('basket'),
+            'count': $(this).parent().parent().find('[name="count"]').val()
+        }
+    }, function (data) {
+        updateBasket();
+        BX.onCustomEvent('OnBasketChange');
+
+    });
+
+    return false;
+
+});
+
+$(document).on('change', '[data-basket-action="coupon"]', function () {
+
+    $.post("/api/2quick/ajax/index.php", {
+        action: 'basketcoupon',
+        data: {
+            'coupon': $('#coupon').val()
+        }
+    }, function (data) {
+
+        updateBasket();
+        BX.onCustomEvent('OnBasketChange');
+
+    });
+
+    return false;
+
+});
+
+$(document).on('click', '[data-basket-action="delete"]', function () {
+
+    $.post("/api/2quick/ajax/index.php", {
+        action: 'basketdelete',
+        data: {
+            'id': $(this).data('id')
+        }
+    }, function (data) {
+
+        updateBasket();
+        BX.onCustomEvent('OnBasketChange');
+
+    });
+
+    return false;
+
+});
+
+$(document).on('change', '[data-basket-action="update"]', function () {
+    var id = $(this).data('id');
+    $.post("/api/2quick/ajax/index.php", {
+        action: 'basketupdate',
+        data: {
+            'id': id,
+            'quantity': $('#basket-quantity-' + id).val()
+        }
+    }, function (data) {
+
+        updateBasket();
+        BX.onCustomEvent('OnBasketChange');
+
+    });
+
+    return false;
+
+});
